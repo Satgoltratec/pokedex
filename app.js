@@ -1,7 +1,9 @@
-const fetchPokemon = () => {
-    const promises = []; /* array que almacenaremos promesas */
+const pokedex = document.getElementById('pokedex'); /* recogemos los datos del html */
 
-    for (let i = 1; i <= 150; i++) { /* recoremos todos los pokemon */
+const fetchPokemon = () => {
+    const promises = []; /* array que almacenamos promesa conversion JSON */
+
+    for (let i = 1; i <= 150; i++) { /* recorremos 150 pokemon */
 
         const api = `https://pokeapi.co/api/v2/pokemon/${i}`; /* llamamos URL api */
         promises.push(           /* almacenamos resultado petición promesa en array */
@@ -12,7 +14,7 @@ const fetchPokemon = () => {
     }
     
     
-    /* cuando todas las promesas se cumplen y recibimos los datos se reasignan en otro array */
+    /* cuando todas las promesas se cumplen y recibimos los datos se reasignan en otro array para asignar propiedades */
        Promise.all(promises).then(results => {
         const pokemon = results.map((data) => (
             
@@ -22,13 +24,28 @@ const fetchPokemon = () => {
                 img: data.sprites['front_default'],
                 type: data.types.map((type)=> type.type.name) .join(', ') 
 
-                /* Los tipos los recibimos en un array por lo que generamos otro solo con nombres */
+                /* Los tipos del pokemon los recibimos en un array por lo que generamos otro solo con nombres */
             })); 
 
-            console.log(pokemon)
+            PokemonDisplay(pokemon); /* llamamos a la función de mostrar pasandole los pokemons */
         
         })
        
 };
+
+const PokemonDisplay = (pokemon) => { 
+
+    const printpokemon = pokemon.map( /* creamos array con los resultados a mostrar */
+        pokelist => 
+        ` 
+
+            <p> "${pokelist.name}" </p> 
+            
+     
+        `
+    )
+
+    pokedex.innerHTML = printpokemon; /* mostramos el html */
+}
 
 fetchPokemon();
